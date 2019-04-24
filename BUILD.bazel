@@ -40,6 +40,7 @@ cc_library(
         "includes/cpp_redis/impl/client.ipp",
         "includes/cpp_redis/impl/types.hpp",
         "includes/cpp_redis/misc/convert.hpp",
+        "includes/cpp_redis/misc/deprecated.hpp",
         "includes/cpp_redis/misc/dispatch_queue.hpp",
         "includes/cpp_redis/misc/error.hpp",
         "includes/cpp_redis/misc/logger.hpp",
