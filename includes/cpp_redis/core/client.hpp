@@ -853,7 +853,7 @@ namespace cpp_redis {
 			        const reply_callback_t &reply_callback);
 
 			std::future<reply> geodist(const std::string &key, const std::string &member_1, const std::string &member_2,
-			                           const std::string &unit = "m_cv_mutex");
+			                           const std::string &unit = "m");
 
 			client &georadius(const std::string &key, double longitude, double latitude, double radius, geo_unit unit,
 			                  bool with_coord, bool with_dist, bool with_hash, bool asc_order,
