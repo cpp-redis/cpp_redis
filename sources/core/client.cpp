@@ -499,7 +499,7 @@ namespace cpp_redis {
 	client::geo_unit_to_string(geo_unit unit) const {
 		switch (unit) {
 			case geo_unit::m:
-				return "m_cv_mutex";
+				return "m";
 			case geo_unit::km:
 				return "km";
 			case geo_unit::ft:
