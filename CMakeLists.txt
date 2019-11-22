@@ -21,25 +21,22 @@
 # SOFTWARE.
 
 ###
+# project
+###
+project(cpp_redis LANGUAGES CXX VERSION 4.4.0)
+
+###
 # config
 ###
-cmake_minimum_required(VERSION 2.8.7)
-set(CMAKE_MACOSX_RPATH 1)
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+cmake_minimum_required(VERSION 3.13)
 
+set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_CXX_STANDARD 11)
 
 ###
 # verbose make
 ###
 # set(CMAKE_VERBOSE_MAKEFILE TRUE)
-
-
-###
-# project
-###
-set(PROJECT cpp_redis)
-project(${PROJECT} CXX)
-
 
 ###
 # compilation options
@@ -69,7 +66,7 @@ if (MSVC)
 	add_definitions(-DUNICODE)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
 else ()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -W -Wall -Wextra -O3")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -O3")
 endif ()
 
 
@@ -141,41 +138,41 @@ configure_file("cpp_redis.pc.in" "${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/cpp_redis.
 ###
 # executable
 ###
-add_library(${PROJECT} ${SOURCES})
-set_property(TARGET ${PROJECT} PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (WIN32)
-	set_target_properties(${PROJECT}
-						  PROPERTIES COMPILE_PDB_NAME ${PROJECT}
+	set_target_properties(${PROJECT_NAME}
+						  PROPERTIES COMPILE_PDB_NAME ${PROJECT_NAME}
 						  COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 endif (WIN32)
 
 if (WIN32)
-	target_link_libraries(${PROJECT} ws2_32)
+	target_link_libraries(${PROJECT_NAME} ws2_32)
 else ()
-	target_link_libraries(${PROJECT} pthread)
+	target_link_libraries(${PROJECT_NAME} pthread)
 endif (WIN32)
 
 if (TACOPIE_LIBRARY)
-	target_link_libraries(${PROJECT} ${TACOPIE_LIBRARY})
+	target_link_libraries(${PROJECT_NAME} ${TACOPIE_LIBRARY})
 else ()
-	target_link_libraries(${PROJECT} tacopie)
+	target_link_libraries(${PROJECT_NAME} tacopie)
 endif (TACOPIE_LIBRARY)
 
 
 # __CPP_REDIS_READ_SIZE
 if (READ_SIZE)
-	set_property(TARGET ${PROJECT} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_READ_SIZE=${READ_SIZE}")
+	set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_READ_SIZE=${READ_SIZE}")
 endif (READ_SIZE)
 
 # __CPP_REDIS_LOGGING_ENABLED
 if (LOGGING_ENABLED)
-	set_property(TARGET ${PROJECT} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_LOGGING_ENABLED=${LOGGING_ENABLED}")
+	set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_LOGGING_ENABLED=${LOGGING_ENABLED}")
 endif (LOGGING_ENABLED)
 
 # __CPP_REDIS_USE_CUSTOM_TCP_CLIENT
 if (USE_CUSTOM_TCP_CLIENT)
-	set_property(TARGET ${PROJECT} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_USE_CUSTOM_TCP_CLIENT=${USE_CUSTOM_TCP_CLIENT}")
+	set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_USE_CUSTOM_TCP_CLIENT=${USE_CUSTOM_TCP_CLIENT}")
 endif (USE_CUSTOM_TCP_CLIENT)
 
 
@@ -206,6 +203,7 @@ endif (BUILD_EXAMPLES)
 if (BUILD_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
+	include(ExternalProject)
 	ExternalProject_Add("googletest"
 						GIT_REPOSITORY "https://github.com/google/googletest.git"
 						CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${PROJECT_SOURCE_DIR}/deps")
