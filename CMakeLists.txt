@@ -23,7 +23,13 @@
 ###
 # project
 ###
-project(cpp_redis LANGUAGES CXX VERSION 4.4.0)
+cmake_policy(SET CMP0048 NEW)
+
+project(cpp_redis
+  VERSION 4.4.0
+  DESCRIPTION "Lightweight C++11 Redis Client"
+  HOMEPAGE_URL ""
+  LANGUAGES CXX)
 
 ###
 # config
