@@ -136,10 +136,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 configure_file("cpp_redis.pc.in" "${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/cpp_redis.pc" @ONLY)
 
 ###
-# executable
+# main target
 ###
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(${PROJECT_NAME} SHARED ${cpp_redis_sources})
 
 if (WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
