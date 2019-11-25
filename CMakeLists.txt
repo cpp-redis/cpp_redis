@@ -92,11 +92,6 @@ endif ()
 
 set(deps_libraries ${PROJECT_SOURCE_DIR}/deps/lib)
 
-###
-# includes
-###
-include_directories(${cpp_redis_includes} ${deps_includes})
-
 # filter tcp_client if no tacopie
 if (USE_CUSTOM_TCP_CLIENT)
   file(GLOB tacopie_cpp "sources/network/tcp_client.cpp")
@@ -120,6 +115,11 @@ configure_file("cpp_redis.pc.in" "${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/cpp_redis.
 # main target
 ###
 add_library(${PROJECT_NAME} SHARED ${cpp_redis_sources})
+
+###
+# includes
+###
+target_include_directories(${PROJECT_NAME} PUBLIC ${cpp_redis_includes} ${deps_includes})
 
 if (WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
