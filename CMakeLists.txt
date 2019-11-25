@@ -136,21 +136,23 @@ else ()
   target_link_libraries(${PROJECT_NAME} PUBLIC tacopie)
 endif ()
 
-# __CPP_REDIS_READ_SIZE
-if (READ_SIZE)
-  set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_READ_SIZE=${READ_SIZE}")
-endif (READ_SIZE)
+###
+# parameters. see
+###
+set(READ_SIZE "4096" CACHE STRING "Number of bytes read from sockets")
+if (READ_SIZE MATCHES "^[1-9]+")
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __CPP_REDIS_READ_SIZE=${READ_SIZE})
+endif ()
 
-# __CPP_REDIS_LOGGING_ENABLED
+option(LOGGING_ENABLED "If true enables logging calls to cpp_redis::level()" OFF)
 if (LOGGING_ENABLED)
-  set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_LOGGING_ENABLED=${LOGGING_ENABLED}")
-endif (LOGGING_ENABLED)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __CPP_REDIS_LOGGING_ENABLED)
+endif ()
 
-# __CPP_REDIS_USE_CUSTOM_TCP_CLIENT
+option(USE_CUSTOM_TCP_CLIENT "If true user must provide a custom tcp_client_iface instance, otherwise uses tacopie" OFF)
 if (USE_CUSTOM_TCP_CLIENT)
-  set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_DEFINITIONS " __CPP_REDIS_USE_CUSTOM_TCP_CLIENT=${USE_CUSTOM_TCP_CLIENT}")
-endif (USE_CUSTOM_TCP_CLIENT)
-
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __CPP_REDIS_USE_CUSTOM_TCP_CLIENT)
+endif ()
 
 ###
 # install
