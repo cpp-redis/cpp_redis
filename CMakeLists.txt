@@ -80,8 +80,8 @@ endif ()
 ###
 # variables
 ###
-find_path(TACOPIE_INCLUDE_DIR tacopie/tacopie PATHS ${PROJECT_SOURCE_DIR}/tacopie/includes/)
-find_library(TACOPIE_LIBRARY tacopie)
+find_path(tacopie_include_dir tacopie/tacopie PATHS ${PROJECT_SOURCE_DIR}/tacopie/includes/)
+find_library(tacopie_library tacopie)
 set(cpp_redis_includes ${CMAKE_CURRENT_LIST_DIR}/includes)
 set(deps_includes ${CMAKE_CURRENT_LIST_DIR}/deps/include)
 
@@ -129,12 +129,11 @@ endif (WIN32)
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
-if (TACOPIE_LIBRARY)
-  target_link_libraries(${PROJECT_NAME} ${TACOPIE_LIBRARY})
+if (tacopie_library)
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${tacopie_library})
 else ()
-  target_link_libraries(${PROJECT_NAME} tacopie)
-endif (TACOPIE_LIBRARY)
-
+  target_link_libraries(${PROJECT_NAME} PUBLIC tacopie)
+endif ()
 
 # __CPP_REDIS_READ_SIZE
 if (READ_SIZE)
@@ -190,7 +189,7 @@ endif (BUILD_TESTS)
 ###
 # tacopie
 ###
-if (NOT TACOPIE_LIBRARY AND NOT USE_CUSTOM_TCP_CLIENT)
   set(SOURCES)  # reset the SOURCES var so that the tacopie project won't include the cpp_redis sources too
+if (NOT tacopie_library AND NOT USE_CUSTOM_TCP_CLIENT)
   add_subdirectory(tacopie)
-endif (NOT TACOPIE_LIBRARY AND NOT USE_CUSTOM_TCP_CLIENT)
+endif ()
