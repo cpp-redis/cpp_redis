@@ -44,6 +44,8 @@ set(CMAKE_CXX_STANDARD 11)
 ###
 # set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
+include(sources.cmake)
+
 ###
 # compilation options
 ###
@@ -75,58 +77,30 @@ else ()
   add_compile_options(-W -Wall -Wextra -O3)
 endif ()
 
-
 ###
 # variables
 ###
 find_path(TACOPIE_INCLUDE_DIR tacopie/tacopie PATHS ${PROJECT_SOURCE_DIR}/tacopie/includes/)
 find_library(TACOPIE_LIBRARY tacopie)
-set(CPP_REDIS_INCLUDES ${PROJECT_SOURCE_DIR}/includes)
-set(DEPS_INCLUDES ${PROJECT_SOURCE_DIR}/deps/include)
+set(cpp_redis_includes ${CMAKE_CURRENT_LIST_DIR}/includes)
+set(deps_includes ${CMAKE_CURRENT_LIST_DIR}/deps/include)
 
 if (NOT USE_CUSTOM_TCP_CLIENT)
-  set(DEPS_INCLUDES ${DEPS_INCLUDES} ${TACOPIE_INCLUDE_DIR})
+  list(APPEND deps_includes ${tacopie_include_dir})
 endif ()
 
-set(DEPS_LIBRARIES ${PROJECT_SOURCE_DIR}/deps/lib)
-
+set(deps_libraries ${PROJECT_SOURCE_DIR}/deps/lib)
 
 ###
 # includes
 ###
-include_directories(${CPP_REDIS_INCLUDES} ${DEPS_INCLUDES})
+include_directories(${cpp_redis_includes} ${deps_includes})
 
-
-###
-# sources
-###
-set(SRC_DIRS "sources"
-  "sources/builders"
-  "sources/core"
-  "sources/misc"
-  "sources/network"
-  "includes/cpp_redis"
-  "includes/cpp_redis/builders"
-  "includes/cpp_redis/core"
-  "includes/cpp_redis/misc"
-  "includes/cpp_redis/network")
-
-foreach (dir ${SRC_DIRS})
-  # get directory sources and headers
-  file(GLOB s_${dir} "${dir}/*.cpp")
-  file(GLOB h_${dir} "${dir}/*.hpp")
-  file(GLOB i_${dir} "${dir}/*.ipp")
-
-  # set sources
-  set(SOURCES ${SOURCES} ${s_${dir}} ${h_${dir}} ${i_${dir}})
-endforeach ()
 # filter tcp_client if no tacopie
 if (USE_CUSTOM_TCP_CLIENT)
   file(GLOB tacopie_cpp "sources/network/tcp_client.cpp")
-  file(GLOB tacopie_h "includes/cpp_redis/network/tcp_client.hpp")
-  list(REMOVE_ITEM SOURCES ${tacopie_cpp} ${tacopie_h})
 endif (USE_CUSTOM_TCP_CLIENT)
-
+  list(REMOVE_ITEM ${cpp_redis_sources} ${tacopie_cpp})
 
 ###
 # outputs
@@ -190,8 +164,7 @@ install(CODE "FILE(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})")
 # install cpp_redis
 install(DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ DESTINATION lib USE_SOURCE_PERMISSIONS)
 install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ DESTINATION bin USE_SOURCE_PERMISSIONS)
-install(DIRECTORY ${CPP_REDIS_INCLUDES}/ DESTINATION include USE_SOURCE_PERMISSIONS)
-
+install(DIRECTORY ${cpp_redis_includes}/ DESTINATION include USE_SOURCE_PERMISSIONS)
 
 ###
 # examples
