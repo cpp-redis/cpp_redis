@@ -126,11 +126,8 @@ if (WIN32)
     COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 endif (WIN32)
 
-if (WIN32)
-  target_link_libraries(${PROJECT_NAME} ws2_32)
-else ()
-  target_link_libraries(${PROJECT_NAME} pthread)
-endif (WIN32)
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
 if (TACOPIE_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${TACOPIE_LIBRARY})
