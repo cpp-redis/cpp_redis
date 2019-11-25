@@ -24,6 +24,7 @@
 # project
 ###
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0077 NEW)
 
 project(cpp_redis
   VERSION 4.4.0
@@ -190,5 +191,8 @@ endif (BUILD_TESTS)
 # tacopie
 ###
 if (NOT tacopie_library AND NOT USE_CUSTOM_TCP_CLIENT)
+  # requires CMP0077 set to NEW
+  set(BUILD_EXAMPLES OFF)
+  set(BUILD_TESTS OFF)
   add_subdirectory(tacopie)
 endif ()
