@@ -100,8 +100,8 @@ include_directories(${cpp_redis_includes} ${deps_includes})
 # filter tcp_client if no tacopie
 if (USE_CUSTOM_TCP_CLIENT)
   file(GLOB tacopie_cpp "sources/network/tcp_client.cpp")
-endif (USE_CUSTOM_TCP_CLIENT)
   list(REMOVE_ITEM ${cpp_redis_sources} ${tacopie_cpp})
+endif ()
 
 ###
 # outputs
@@ -125,7 +125,7 @@ if (WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_PDB_NAME ${PROJECT_NAME}
     COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-endif (WIN32)
+endif ()
 
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
@@ -170,7 +170,7 @@ install(DIRECTORY ${cpp_redis_includes}/ DESTINATION include USE_SOURCE_PERMISSI
 ###
 if (BUILD_EXAMPLES)
   add_subdirectory(examples)
-endif (BUILD_EXAMPLES)
+endif ()
 
 ###
 # tests
