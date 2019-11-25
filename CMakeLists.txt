@@ -170,8 +170,6 @@ install(DIRECTORY ${cpp_redis_includes}/ DESTINATION include USE_SOURCE_PERMISSI
 ###
 if (BUILD_EXAMPLES)
   add_subdirectory(examples)
-  # Reset variable to false to ensure tacopie does no build examples
-  set(BUILD_EXAMPLES false)
 endif (BUILD_EXAMPLES)
 
 ###
