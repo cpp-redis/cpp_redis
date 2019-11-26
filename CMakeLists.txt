@@ -127,7 +127,9 @@ add_library(${PROJECT_NAME} SHARED ${cpp_redis_sources})
 ###
 # includes
 ###
-target_include_directories(${PROJECT_NAME} PUBLIC ${cpp_redis_includes} ${deps_includes})
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${cpp_redis_includes}>
+  $<INSTALL_INTERFACE:include>)
 
 if (WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
