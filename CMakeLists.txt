@@ -83,6 +83,14 @@ endif ()
 ###
 find_path(tacopie_include_dir tacopie/tacopie PATHS ${PROJECT_SOURCE_DIR}/tacopie/includes/)
 find_library(tacopie_library tacopie)
+if (NOT tacopie_library AND NOT USE_CUSTOM_TCP_CLIENT)
+  # requires CMP0077 set to NEW
+  set(BUILD_EXAMPLES OFF)
+  set(BUILD_TESTS OFF)
+  add_subdirectory(tacopie)
+  # TODO: add alias library
+endif ()
+
 set(cpp_redis_includes ${CMAKE_CURRENT_LIST_DIR}/includes)
 set(deps_includes ${CMAKE_CURRENT_LIST_DIR}/deps/include)
 
@@ -182,14 +190,4 @@ if (BUILD_TESTS)
     add_subdirectory(googletest)
   endif ()
   add_subdirectory(tests)
-endif ()
-
-###
-# tacopie
-###
-if (NOT tacopie_library AND NOT USE_CUSTOM_TCP_CLIENT)
-  # requires CMP0077 set to NEW
-  set(BUILD_EXAMPLES OFF)
-  set(BUILD_TESTS OFF)
-  add_subdirectory(tacopie)
 endif ()
