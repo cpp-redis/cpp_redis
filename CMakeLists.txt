@@ -117,7 +117,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ###
 # pkg-config
 ###
-configure_file("cpp_redis.pc.in" "${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/cpp_redis.pc" @ONLY)
+configure_file("${PROJECT_NAME}.pc.in" "${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pc" @ONLY)
 
 ###
 # main target
