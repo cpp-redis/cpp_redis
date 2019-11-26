@@ -40,6 +40,8 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_STANDARD 11)
 
+set(EXPORT_TARGET_NAME ${PROJECT_NAME} CACHE STRING "Name of the exported CMake target used in install(EXPORT)")
+
 ###
 # verbose make
 ###
@@ -137,6 +139,10 @@ if (WIN32)
     COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 endif ()
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  SOVERSION ${PROJECT_VERSION}
+  RESOURCE ${CMAKE_PKGCONFIG_OUTPUT_DIRECTORY}/${PROJECT_NAME}.pc)
+
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
@@ -167,14 +173,12 @@ endif ()
 ###
 # install
 ###
-# ensure lib and bin directories exist
-install(CODE "file(MAKE_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})")
-install(CODE "file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})")
-# install cpp_redis
-install(DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ DESTINATION lib USE_SOURCE_PERMISSIONS)
-install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ DESTINATION bin USE_SOURCE_PERMISSIONS)
 install(DIRECTORY ${cpp_redis_includes}/ DESTINATION include USE_SOURCE_PERMISSIONS)
 
+include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME} EXPORT ${EXPORT_TARGET_NAME}
+  LIBRARY
+  RESOURCE DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 ###
 # examples
 ###
