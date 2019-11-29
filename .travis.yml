@@ -36,8 +36,8 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then CMAKE_PLATFORM="Darwin"; fi
   - CMAKE_FILE="cmake-${CMAKE_VERSION}-${CMAKE_PLATFORM}-x86_64"
   - CMAKE_DIR="v${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}"
-  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
   - travis_retry wget --no-check-certificate https://cmake.org/files/${CMAKE_DIR}/${CMAKE_FILE}.tar.gz
+  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
   # do a quick md5 check to ensure that the archive we downloaded did not get compromised
   - echo "aee19b081eb4f19d4f85d6aa5c069e01 *${CMAKE_FILE}.tar.gz" > cmake_md5.txt
   - md5sum -c cmake_md5.txt
