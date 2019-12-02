@@ -23,13 +23,17 @@
 ###
 # project
 ###
-cmake_policy(SET CMP0048 NEW)
-cmake_policy(SET CMP0077 NEW)
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif ()
+if (POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif ()
 
 project(cpp_redis
   VERSION 4.4.0
   DESCRIPTION "Lightweight C++11 Redis Client"
-  HOMEPAGE_URL ""
+  HOMEPAGE_URL "https://github.com/cpp-redis/cpp_redis"
   LANGUAGES CXX)
 
 ###
@@ -174,7 +178,6 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${EXPORT_TARGET_NAME}
   LIBRARY
   RESOURCE DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 install(EXPORT ${EXPORT_TARGET_NAME} DESTINATION lib/${PROJECT_NAME} EXPORT_LINK_INTERFACE_LIBRARIES)
-
 
 ###
 # examples
