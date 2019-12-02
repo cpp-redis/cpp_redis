@@ -36,6 +36,8 @@ before_script:
   - cd build
   # run cmake; here we assume that the project's
   # top-level CMakeLists.txt is located at '..'
+  - ls ${CMAKE_INSTALL_DIR}
+  - ls ${CMAKE_INSTALL_DIR}/bin
   - env
   - which cmake
   - cmake --version
