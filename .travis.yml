@@ -37,16 +37,13 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then CMAKE_PLATFORM="Darwin"; fi
   - CMAKE_FILE="cmake-${CMAKE_VERSION}-${CMAKE_PLATFORM}-x86_64"
   - CMAKE_DIR="v${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+  - CMAKE_INSTALL_DIR="cmake-install"
+  - mkdir -p ${DEPS_DIR}/${CMAKE_INSTALL_DIR} && cd ${DEPS_DIR}
   - travis_retry wget https://cmake.org/files/${CMAKE_DIR}/${CMAKE_FILE}.tar.gz
   # extract the binaries; the output here is quite lengthy,
   # so we swallow it to not clutter up the travis console
   - tar -xvf ${CMAKE_FILE}.tar.gz > /dev/null
-  - mv ${CMAKE_FILE} cmake-install
-  # add both the top-level directory and the bin directory from the archive
-  # to the system PATH. By adding it to the front of the path we hide the
-  # preinstalled CMake with our own.
-  - export PATH="${DEPS_DIR}/cmake-install:${DEPS_DIR}/cmake-install/bin:$PATH"
+  - mv ${CMAKE_FILE} ${CMAKE_INSTALL_DIR}
   # don't forget to switch back to the main build directory once you are done
   - cd ${TRAVIS_BUILD_DIR}
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ccache; fi
@@ -54,7 +51,11 @@ install:
   - if [[ "$TRAVIS_OS_NAME" != "osx" && "$CXX" = "g++" ]]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install redis; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then (redis-server&); fi
-
+  # add both the top-level directory and the bin directory from the archive
+  # to the system PATH. By adding it to the front of the path we hide the
+  # preinstalled CMake with our own.
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CMAKE_INSTALL_DIR="${DEPS_DIR}/cmake-install/CMake.app/Contents"
+  - export PATH="${DEPS_DIR}/${CMAKE_INSTALL_DIR}:${DEPS_DIR}/${CMAKE_INSTALL_DIR}/bin:$PATH"
 before_script:
   # create a build folder for the out-of-source build
   - mkdir build
