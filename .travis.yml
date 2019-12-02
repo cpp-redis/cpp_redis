@@ -54,7 +54,7 @@ install:
   # add both the top-level directory and the bin directory from the archive
   # to the system PATH. By adding it to the front of the path we hide the
   # preinstalled CMake with our own.
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CMAKE_INSTALL_DIR="${DEPS_DIR}/cmake-install/CMake.app/Contents"
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CMAKE_INSTALL_DIR="${DEPS_DIR}/cmake-install/CMake.app/Contents"; fi
   - export PATH="${DEPS_DIR}/${CMAKE_INSTALL_DIR}:${DEPS_DIR}/${CMAKE_INSTALL_DIR}/bin:$PATH"
 before_script:
   # create a build folder for the out-of-source build
