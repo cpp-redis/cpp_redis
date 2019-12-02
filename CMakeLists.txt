@@ -20,26 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.13)
+
 ###
 # project
 ###
-if (POLICY CMP0048)
+if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
   cmake_policy(SET CMP0048 NEW)
+  project(cpp_redis
+    VERSION 4.4.0
+    DESCRIPTION "Lightweight C++11 Redis Client"
+    HOMEPAGE_URL "https://github.com/cpp-redis/cpp_redis"
+    LANGUAGES CXX)
+else ()
+  # for cmake >= 3.0
+  project(cpp_redis VERSION 4.4.0 LANGUAGES CXX)
 endif ()
 if (POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif ()
-
-project(cpp_redis
-  VERSION 4.4.0
-  DESCRIPTION "Lightweight C++11 Redis Client"
-  HOMEPAGE_URL "https://github.com/cpp-redis/cpp_redis"
-  LANGUAGES CXX)
-
-###
-# config
-###
-cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_STANDARD 11)
