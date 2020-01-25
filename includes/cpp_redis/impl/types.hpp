@@ -40,6 +40,8 @@ namespace cpp_redis {
 class serializer_type {
 public:
   inline serializer_type() {}
+  
+  virtual ~serializer_type() {}
 
   /**
  * @return the underlying string
@@ -62,6 +64,8 @@ typedef std::shared_ptr<serializer_type> serializer_ptr_t;
 template <typename T>
 class message_impl {
 public:
+  virtual ~message_impl() {}
+
   virtual const std::string get_id() const = 0;
 
   virtual const message_impl& set_id(std::string id) = 0;
