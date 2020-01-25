@@ -32,8 +32,8 @@ client.sync_commit();
 //! or client.commit(); for asynchronous call
 ```
 
-`cpp_redis::client` [full documentation](https://github.com/Cylix/cpp_redis/wiki/Redis-Client) and [detailed example](https://github.com/Cylix/cpp_redis/wiki/Examples#redis-client).
-More about [cpp_redis::reply](https://github.com/Cylix/cpp_redis/wiki/Replies).
+`cpp_redis::client` [full documentation](https://github.com/cpp-redis/cpp_redis/wiki/Redis-Client) and [detailed example](https://github.com/cpp-redis/cpp_redis/wiki/Examples#redis-client).
+More about [cpp_redis::reply](https://github.com/cpp-redis/cpp_redis/wiki/Replies).
 
 ### cpp_redis::subscriber
 
@@ -53,11 +53,11 @@ sub.commit();
 
 ```
 
-`cpp_redis::subscriber` [full documentation](https://github.com/Cylix/cpp_redis/wiki/Redis-Subscriber) and [detailed example](https://github.com/Cylix/cpp_redis/wiki/Examples#redis-subscriber).
+`cpp_redis::subscriber` [full documentation](https://github.com/cpp-redis/cpp_redis/wiki/Redis-Subscriber) and [detailed example](https://github.com/cpp-redis/cpp_redis/wiki/Examples#redis-subscriber).
 
 ## Wiki
 
-A [Wiki](https://github.com/Cylix/cpp_redis/wiki) is available and provides full documentation for the library as well as [installation explanations](https://github.com/Cylix/cpp_redis/wiki/Installation).
+A [Wiki](https://github.com/cpp-redis/cpp_redis/wiki) is available and provides full documentation for the library as well as [installation explanations](https://github.com/cpp-redis/cpp_redis/wiki/Installation).
 
 # Doxygen
 
