@@ -29,8 +29,12 @@ using namespace std::placeholders;
 
 namespace cpp_redis {
 
+#ifndef __CPP_REDIS_USE_CUSTOM_TCP_CLIENT
+
 	consumer_client_container::consumer_client_container() : ack_client(), poll_client() {
 	}
+
+#endif /* __CPP_REDIS_USE_CUSTOM_TCP_CLIENT */
 
 	consumer::consumer(std::string stream, std::string consumer, size_t max_concurrency)
 			: m_stream(std::move(stream)),
