@@ -30,12 +30,13 @@
 #include <string>
 
 namespace cpp_redis {
-	inline std::string generate_rand() {
-		std::mt19937 rng;
-		rng.seed(std::random_device()());
-		std::uniform_int_distribution<std::mt19937::result_type> dist6(1,6); // distribution in range [1, 6]
-		return std::to_string(dist6(rng));
-	}
+inline std::string
+generate_rand() {
+  std::mt19937 rng;
+  rng.seed(std::random_device()());
+  std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6); // distribution in range [1, 6]
+  return std::to_string(dist6(rng));
 }
+} // namespace cpp_redis
 
 #endif //CPP_REDIS_GENERATE_RAND_HPP

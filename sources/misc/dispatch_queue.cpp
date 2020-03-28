@@ -25,91 +25,95 @@
 
 namespace cpp_redis {
 
-	dispatch_queue::dispatch_queue(std::string name, const notify_callback_t &notify_callback, size_t thread_cnt) :
-			m_name(name), m_threads(thread_cnt), m_mq(), notify_handler(notify_callback) {
-		printf("Creating dispatch queue: %s\n", name.c_str());
-		printf("Dispatch threads: %zu\n", thread_cnt);
+dispatch_queue::dispatch_queue(std::string name, const notify_callback_t& notify_callback, size_t thread_cnt)
+: m_name(name), m_threads(thread_cnt), m_mq(), notify_handler(notify_callback) {
+  printf("Creating dispatch queue: %s\n", name.c_str());
+  printf("Dispatch threads: %zu\n", thread_cnt);
 
-		for (auto &i : m_threads) {
-			i = std::thread(&dispatch_queue::dispatch_thread_handler, this);
-		}
-	}
-
-	dispatch_queue::~dispatch_queue() {
-		printf("Destructor: Destroying dispatch threads...\n");
-
-		// Signal to dispatch threads that it's time to wrap up
-		std::unique_lock<std::mutex> lock(m_threads_lock);
-		m_quit = true;
-		lock.unlock();
-		m_cv.notify_all();
-
-		// Wait for threads to finish before we exit
-		for (size_t i = 0; i < m_threads.size(); i++) {
-			if (m_threads[i].joinable()) {
-				printf("Destructor: Joining thread %zu until completion\n", i);
-				m_threads[i].join();
-			}
-		}
-	}
-
-	void dispatch_queue::dispatch(const cpp_redis::message_type& message, const dispatch_callback_t &op) {
-		std::unique_lock<std::mutex> lock(m_threads_lock);
-		m_mq.push({op, message});
-
-		// Manual unlocking is done before notifying, to avoid waking up
-		// the waiting thread only to block again (see notify_one for details)
-		lock.unlock();
-		m_cv.notify_all();
-	}
-
-	void dispatch_queue::dispatch(const cpp_redis::message_type& message, dispatch_callback_t &&op) {
-		std::unique_lock<std::mutex> lock(m_threads_lock);
-		m_mq.push({std::move(op), message});
-
-		// Manual unlocking is done before notifying, to avoid waking up
-		// the waiting thread only to block again (see notify_one for details)
-		lock.unlock();
-		m_cv.notify_all();
-	}
-
-	void dispatch_queue::dispatch_thread_handler() {
-		std::unique_lock<std::mutex> lock(m_threads_lock);
-
-		do {
-			//Wait until we have data or a quit signal
-			m_cv.wait(lock, [this] {
-					return (!m_mq.empty() || m_quit);
-			});
-
-			notify_handler(m_mq.size());
-
-			//after wait, we own the lock
-			if (!m_quit && !m_mq.empty()) {
-				auto op = std::move(m_mq.front());
-				m_mq.pop();
-
-				//unlock now that we're done messing with the queue
-				lock.unlock();
-
-				auto vals = op.message.get_values();
-
-				for (auto v : vals) {
-					std::cout << v.second << std::endl;
-				}
-
-				auto res = op.callback(op.message);
-
-				lock.lock();
-			}
-		} while (!m_quit);
-	}
-
-	size_t dispatch_queue::size() {
-		std::lock_guard<std::mutex> mq_lock(m_mq_mutex);
-		long res = m_mq.size();
-		//unlock now that we're done messing with the queue
-		//mq_lock.unlock();
-		return static_cast<size_t>(res);
-	}
+  for (auto& i : m_threads) {
+    i = std::thread(&dispatch_queue::dispatch_thread_handler, this);
+  }
 }
+
+dispatch_queue::~dispatch_queue() {
+  printf("Destructor: Destroying dispatch threads...\n");
+
+  // Signal to dispatch threads that it's time to wrap up
+  std::unique_lock<std::mutex> lock(m_threads_lock);
+  m_quit = true;
+  lock.unlock();
+  m_cv.notify_all();
+
+  // Wait for threads to finish before we exit
+  for (size_t i = 0; i < m_threads.size(); i++) {
+    if (m_threads[i].joinable()) {
+      printf("Destructor: Joining thread %zu until completion\n", i);
+      m_threads[i].join();
+    }
+  }
+}
+
+void
+dispatch_queue::dispatch(const cpp_redis::message_type& message, const dispatch_callback_t& op) {
+  std::unique_lock<std::mutex> lock(m_threads_lock);
+  m_mq.push({op, message});
+
+  // Manual unlocking is done before notifying, to avoid waking up
+  // the waiting thread only to block again (see notify_one for details)
+  lock.unlock();
+  m_cv.notify_all();
+}
+
+void
+dispatch_queue::dispatch(const cpp_redis::message_type& message, dispatch_callback_t&& op) {
+  std::unique_lock<std::mutex> lock(m_threads_lock);
+  m_mq.push({std::move(op), message});
+
+  // Manual unlocking is done before notifying, to avoid waking up
+  // the waiting thread only to block again (see notify_one for details)
+  lock.unlock();
+  m_cv.notify_all();
+}
+
+void
+dispatch_queue::dispatch_thread_handler() {
+  std::unique_lock<std::mutex> lock(m_threads_lock);
+
+  do {
+    //Wait until we have data or a quit signal
+    m_cv.wait(lock, [this] {
+      return (!m_mq.empty() || m_quit);
+    });
+
+    notify_handler(m_mq.size());
+
+    //after wait, we own the lock
+    if (!m_quit && !m_mq.empty()) {
+      auto op = std::move(m_mq.front());
+      m_mq.pop();
+
+      //unlock now that we're done messing with the queue
+      lock.unlock();
+
+      auto vals = op.message.get_values();
+
+      for (auto v : vals) {
+        std::cout << v.second << std::endl;
+      }
+
+      auto res = op.callback(op.message);
+
+      lock.lock();
+    }
+  } while (!m_quit);
+}
+
+size_t
+dispatch_queue::size() {
+  std::lock_guard<std::mutex> mq_lock(m_mq_mutex);
+  long res = m_mq.size();
+  //unlock now that we're done messing with the queue
+  //mq_lock.unlock();
+  return static_cast<size_t>(res);
+}
+} // namespace cpp_redis

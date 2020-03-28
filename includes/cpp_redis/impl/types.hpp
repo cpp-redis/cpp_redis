@@ -40,7 +40,7 @@ namespace cpp_redis {
 class serializer_type {
 public:
   inline serializer_type() {}
-  
+
   virtual ~serializer_type() {}
 
   /**

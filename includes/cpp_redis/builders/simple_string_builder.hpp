@@ -37,30 +37,30 @@ namespace builders {
  */
 class simple_string_builder : public builder_iface {
 public:
-/**
+  /**
  * ctor
  *
  */
   simple_string_builder();
-/**
+  /**
  * dtor
  *
  */
   ~simple_string_builder() override = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   simple_string_builder(const simple_string_builder&) = delete;
-/**
+  /**
  * assignment operator
  *
  */
   simple_string_builder& operator=(const simple_string_builder&) = delete;
 
 public:
-/**
+  /**
  * take data as parameter which is consumed to build the reply
  * every bytes used to build the reply must be removed from the buffer passed as parameter
  *
@@ -70,38 +70,38 @@ public:
  */
   builder_iface& operator<<(std::string& data) override;
 
-/**
+  /**
  * @return whether the reply could be built
  *
  */
   bool reply_ready() const override;
 
-/**
+  /**
  * @return reply object
  *
  */
   reply get_reply() const override;
 
-/**
+  /**
  * @return the parsed simple string
  *
  */
   const std::string& get_simple_string() const;
 
 private:
-/**
+  /**
  * parsed simple string
  *
  */
   std::string m_str;
 
-/**
+  /**
  * whether the reply is ready or not
  *
  */
   bool m_reply_ready;
 
-/**
+  /**
  * reply to be built
  *
  */

@@ -35,30 +35,30 @@ namespace cpp_redis {
  */
 class logger_iface {
 public:
-/**
+  /**
  * ctor
  *
  */
   logger_iface() = default;
-/**
+  /**
  * dtor
  *
  */
   virtual ~logger_iface() = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   logger_iface(const logger_iface&) = default;
-/**
+  /**
  * assignment operator
  *
  */
   logger_iface& operator=(const logger_iface&) = default;
 
 public:
-/**
+  /**
  * debug logging
  *
  * @param msg message to be logged
@@ -68,7 +68,7 @@ public:
  */
   virtual void debug(const std::string& msg, const std::string& file, std::size_t line) = 0;
 
-/**
+  /**
  * info logging
  *
  * @param msg message to be logged
@@ -78,7 +78,7 @@ public:
  */
   virtual void info(const std::string& msg, const std::string& file, std::size_t line) = 0;
 
-/**
+  /**
  * warn logging
  *
  * @param msg message to be logged
@@ -88,7 +88,7 @@ public:
  */
   virtual void warn(const std::string& msg, const std::string& file, std::size_t line) = 0;
 
-/**
+  /**
  * error logging
  *
  * @param msg message to be logged
@@ -105,7 +105,7 @@ public:
  */
 class logger : public logger_iface {
 public:
-/**
+  /**
  * log level
  *
  */
@@ -117,30 +117,30 @@ public:
   };
 
 public:
-/**
+  /**
  * ctor
  *
  */
-    explicit logger(log_level level = log_level::info);
-/**
+  explicit logger(log_level level = log_level::info);
+  /**
  * dtor
  *
  */
   ~logger() override = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   logger(const logger&) = default;
-/**
+  /**
  * assignment operator
  *
  */
   logger& operator=(const logger&) = default;
 
 public:
-/**
+  /**
  * debug logging
  *
  * @param msg message to be logged
@@ -150,7 +150,7 @@ public:
  */
   void debug(const std::string& msg, const std::string& file, std::size_t line) override;
 
-/**
+  /**
  * info logging
  *
  * @param msg message to be logged
@@ -160,7 +160,7 @@ public:
  */
   void info(const std::string& msg, const std::string& file, std::size_t line) override;
 
-/**
+  /**
  * warn logging
  *
  * @param msg message to be logged
@@ -170,7 +170,7 @@ public:
  */
   void warn(const std::string& msg, const std::string& file, std::size_t line) override;
 
-/**
+  /**
  * error logging
  *
  * @param msg message to be logged
@@ -181,13 +181,13 @@ public:
   void error(const std::string& msg, const std::string& file, std::size_t line) override;
 
 private:
-/**
+  /**
  * current log level in use
  *
  */
   log_level m_level;
 
-/**
+  /**
  * mutex used to serialize logs in multi-threaded environment
  *
  */

@@ -19,101 +19,105 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-#include <string>
-#include <cpp_redis/cpp_redis>
 #include "winsock_initializer.h"
+#include <cpp_redis/cpp_redis>
+#include <string>
 
 int
 main() {
-	winsock_initializer winsock_init;
-	//! Enable logging
-	cpp_redis::active_logger = std::unique_ptr<cpp_redis::logger>(new cpp_redis::logger);
+  winsock_initializer winsock_init;
+  //! Enable logging
+  cpp_redis::active_logger = std::unique_ptr<cpp_redis::logger>(new cpp_redis::logger);
 
-	cpp_redis::client client;
+  cpp_redis::client client;
 
-	client.connect("127.0.0.1", 6379,
-	               [](const std::string &host, std::size_t port, cpp_redis::connect_state status) {
-			               if (status == cpp_redis::connect_state::dropped) {
-				               std::cout << "client disconnected from " << host << ":" << port << std::endl;
-			               }
-	               });
+  client.connect("127.0.0.1", 6379,
+    [](const std::string& host, std::size_t port, cpp_redis::connect_state status) {
+      if (status == cpp_redis::connect_state::dropped) {
+        std::cout << "client disconnected from " << host << ":" << port << std::endl;
+      }
+    });
 
-	auto reply_cmd = [](cpp_redis::reply &reply) {
-			std::cout << "response: " << reply.as_string() << std::endl;
-	};
+  auto reply_cmd = [](cpp_redis::reply& reply) {
+    std::cout << "response: " << reply.as_string() << std::endl;
+  };
 
-	std::string message_id;
+  std::string message_id;
 
-	const std::string group_name = "groupone";
-	const std::string session_name = "sessone";
-	const std::string consumer_name = "ABCD";
+  const std::string group_name    = "groupone";
+  const std::string session_name  = "sessone";
+  const std::string consumer_name = "ABCD";
 
-	std::multimap<std::string, std::string> ins;
-	ins.insert(std::pair<std::string, std::string>{"message", "hello"});
-	ins.insert(std::pair<std::string, std::string>{"result", "a result"});
+  std::multimap<std::string, std::string> ins;
+  ins.insert(std::pair<std::string, std::string>{"message", "hello"});
+  ins.insert(std::pair<std::string, std::string>{"result", "a result"});
 
-	client.xtrim(session_name, 10, reply_cmd);
+  client.xtrim(session_name, 10, reply_cmd);
 
-	client.xgroup_create(session_name, group_name, reply_cmd);
+  client.xgroup_create(session_name, group_name, reply_cmd);
 
-	client.xadd(session_name, "*", {{"message", "hello"},
-	                                {"details", "some details"}}, [&](cpp_redis::reply &reply) {
-			std::cout << "response: " << reply.as_string() << std::endl;
-			message_id = reply.as_string();
-			std::cout << "message id: " << message_id << std::endl;
-	});
+  client.xadd(session_name, "*", {{"message", "hello"}, {"details", "some details"}}, [&](cpp_redis::reply& reply) {
+    std::cout << "response: " << reply.as_string() << std::endl;
+    message_id = reply.as_string();
+    std::cout << "message id: " << message_id << std::endl;
+  });
 
-	client.sync_commit();
+  client.sync_commit();
 
-	std::cout << "message id after: " << message_id << std::endl;
+  std::cout << "message id after: " << message_id << std::endl;
 
-	client.xack(session_name, group_name, {message_id}, reply_cmd);
-	client.xinfo_stream(session_name, [](cpp_redis::reply &reply) {
-			//std::cout << reply << std::endl;
-			cpp_redis::xinfo_reply x(reply);
-			std::cout << "Len: " << x.Length << std::endl;
-	});
-	//client.xadd(session_name, message_id, {{"final", "finished"}}, reply_cmd);
+  client.xack(session_name, group_name, {message_id}, reply_cmd);
+  client.xinfo_stream(session_name, [](cpp_redis::reply& reply) {
+    //std::cout << reply << std::endl;
+    cpp_redis::xinfo_reply x(reply);
+    std::cout << "Len: " << x.Length << std::endl;
+  });
+  //client.xadd(session_name, message_id, {{"final", "finished"}}, reply_cmd);
 
-	client.sync_commit(std::chrono::milliseconds(100));
+  client.sync_commit(std::chrono::milliseconds(100));
 
-	client.xread({Streams: {{session_name},
-	                        {message_id}},
-			             Count: 10,
-			             Block: 100}, reply_cmd);
+  client.xread({Streams : {{session_name},
+                  {message_id}},
+    Count : 10,
+    Block : 100},
+    reply_cmd);
 
-	client.sync_commit(std::chrono::milliseconds(100));
+  client.sync_commit(std::chrono::milliseconds(100));
 
-	client.xrange(session_name, {"-", "+", 10}, reply_cmd);
+  client.xrange(session_name, {"-", "+", 10}, reply_cmd);
 
-	client.xreadgroup({group_name,
-	                   "0",
-	                   {{session_name}, {">"}},
-	                   1, -1, false // count, block, no_ack
-	                  }, [](cpp_redis::reply &reply) {
-			cpp_redis::xstream_reply msg(reply);
-			std::cout << msg << std::endl;
-	});
+  client.xreadgroup({
+                      group_name,
+                      "0",
+                      {{session_name}, {">"}},
+                      1, -1, false // count, block, no_ack
+                    },
+    [](cpp_redis::reply& reply) {
+      cpp_redis::xstream_reply msg(reply);
+      std::cout << msg << std::endl;
+    });
 
-	client.sync_commit(std::chrono::milliseconds(100));
+  client.sync_commit(std::chrono::milliseconds(100));
 
-	client.xreadgroup({group_name,
-	                   consumer_name,
-	                   {{session_name}, {">"}},
-	                   1, 0, false // count, block, no_ack
-	                  }, [](cpp_redis::reply &reply) {
-			cpp_redis::xstream_reply msg(reply);
-			std::cout << msg << std::endl;
-	});
+  client.xreadgroup({
+                      group_name,
+                      consumer_name,
+                      {{session_name}, {">"}},
+                      1, 0, false // count, block, no_ack
+                    },
+    [](cpp_redis::reply& reply) {
+      cpp_redis::xstream_reply msg(reply);
+      std::cout << msg << std::endl;
+    });
 
-	// commands are pipelined and only sent when client.commit() is called
-	// client.commit();
+  // commands are pipelined and only sent when client.commit() is called
+  // client.commit();
 
-	// synchronous commit, no timeout
-	client.sync_commit(std::chrono::milliseconds(100));
+  // synchronous commit, no timeout
+  client.sync_commit(std::chrono::milliseconds(100));
 
-	// synchronous commit, timeout
-	// client.sync_commit(std::chrono::milliseconds(100));
+  // synchronous commit, timeout
+  // client.sync_commit(std::chrono::milliseconds(100));
 
-	return 0;
+  return 0;
 }

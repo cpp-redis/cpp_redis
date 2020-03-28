@@ -22,9 +22,9 @@
 
 #include <cpp_redis/cpp_redis>
 
+#include "winsock_initializer.h"
 #include <iostream>
 #include <sstream>
-#include "winsock_initializer.h"
 
 int
 main(void) {

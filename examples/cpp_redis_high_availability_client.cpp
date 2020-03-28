@@ -22,8 +22,8 @@
 
 #include <cpp_redis/cpp_redis>
 
-#include <iostream>
 #include "winsock_initializer.h"
+#include <iostream>
 
 int
 main(void) {

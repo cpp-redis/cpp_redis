@@ -22,27 +22,29 @@
 #ifndef CPP_REDIS_CONVERT_HPP
 #define CPP_REDIS_CONVERT_HPP
 
-#include <sstream>
 #include <cpp_redis/misc/optional.hpp>
+#include <sstream>
 
 namespace cpp_redis {
 
-	class try_convert {
-	public:
-			template <class T>
-			static enableIf<std::is_convertible<T, std::string>::value, optional_t<int64_t> > to_int(T value) {
-				try {
-					std::stringstream stream(value);
-					int64_t x;
-					stream >> x;
-					return optional_t<int64_t>(x);
-				} catch (std::exception &exc) {
-					return {};
-				}
-			}
-	};
+class try_convert {
+public:
+  template <class T>
+  static enableIf<std::is_convertible<T, std::string>::value, optional_t<int64_t>>
+  to_int(T value) {
+    try {
+      std::stringstream stream(value);
+      int64_t x;
+      stream >> x;
+      return optional_t<int64_t>(x);
+    }
+    catch (std::exception& exc) {
+      return {};
+    }
+  }
+};
 
-}
+} // namespace cpp_redis
 
 
 #endif //CPP_REDIS_CONVERT_HPP

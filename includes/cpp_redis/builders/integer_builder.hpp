@@ -37,30 +37,30 @@ namespace builders {
  */
 class integer_builder : public builder_iface {
 public:
-/**
+  /**
  * ctor
  *
  */
   integer_builder();
-/**
+  /**
  * dtor
  *
  */
   ~integer_builder() override = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   integer_builder(const integer_builder&) = delete;
-/**
+  /**
  * assignment operator
  *
  */
   integer_builder& operator=(const integer_builder&) = delete;
 
 public:
-/**
+  /**
  * take data as parameter which is consumed to build the reply
  * every bytes used to build the reply must be removed from the buffer passed as parameter
  *
@@ -70,44 +70,44 @@ public:
  */
   builder_iface& operator<<(std::string& data) override;
 
-/**
+  /**
  * @return whether the reply could be built
  *
  */
   bool reply_ready() const override;
 
-/**
+  /**
  * @return reply object
  *
  */
   reply get_reply() const override;
 
-/**
+  /**
  * @return the parsed integer
  *
  */
   int64_t get_integer() const;
 
 private:
-/**
+  /**
  * parsed number
  *
  */
   int64_t m_nbr;
 
-/**
+  /**
  * -1 for negative number, 1 otherwise
  *
  */
   int64_t m_negative_multiplicator;
 
-/**
+  /**
  * whether the reply is ready or not
  *
  */
   bool m_reply_ready;
 
-/**
+  /**
  * reply to be built
  *
  */

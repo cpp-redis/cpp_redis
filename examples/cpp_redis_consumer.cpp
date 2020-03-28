@@ -19,64 +19,64 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-#include <string>
 #include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <signal.h>
+#include <string>
 
-#include <cpp_redis/cpp_redis>
 #include "winsock_initializer.h"
+#include <cpp_redis/cpp_redis>
 
 std::condition_variable should_exit;
 
 void
 sigint_handler(int) {
-	should_exit.notify_all();
+  should_exit.notify_all();
 }
 
 int
 main() {
-	winsock_initializer winsock_init;
-	//! Enable logging
+  winsock_initializer winsock_init;
+  //! Enable logging
 
-	//const std::string group_name = "groupone";
-	const std::vector<std::string> group_names = {"groupone"}; //, "grouptwo"};
-	const std::string session_name = "sessone";
-	const std::string consumer_name = "ABCD";
+  //const std::string group_name = "groupone";
+  const std::vector<std::string> group_names = {"groupone"}; //, "grouptwo"};
+  const std::string session_name             = "sessone";
+  const std::string consumer_name            = "ABCD";
 
-	cpp_redis::active_logger = std::unique_ptr<cpp_redis::logger>(new cpp_redis::logger);
+  cpp_redis::active_logger = std::unique_ptr<cpp_redis::logger>(new cpp_redis::logger);
 
-	cpp_redis::consumer sub(session_name, consumer_name);
+  cpp_redis::consumer sub(session_name, consumer_name);
 
-	sub.connect("127.0.0.1", 6379,
-	            [](const std::string &host, std::size_t port, cpp_redis::connect_state status) {
-			            if (status == cpp_redis::connect_state::dropped) {
-				            std::cout << "client disconnected from " << host << ":" << port << std::endl;
-			            }
-	            });
+  sub.connect("127.0.0.1", 6379,
+    [](const std::string& host, std::size_t port, cpp_redis::connect_state status) {
+      if (status == cpp_redis::connect_state::dropped) {
+        std::cout << "client disconnected from " << host << ":" << port << std::endl;
+      }
+    });
 
-	sub.auth("{redis_key}");
+  sub.auth("{redis_key}");
 
-	for (auto &group : group_names) {
+  for (auto& group : group_names) {
 
-		sub.subscribe(group,
-		              [group](const cpp_redis::message_type msg) {
-											cpp_redis::consumer_response_t res;
-				              // Callback will run for each message obtained from the queue
-				              std::cout << "Group: " << group << std::endl;
-				              std::cout << "Id in the cb: " << msg.get_id() << std::endl;
-				              res.insert({"Id", msg.get_id()});
-				              return res;
-		              },
-		              [group](int ack_status) {
-				              // Callback will run upon return of xack
-				              std::cout << "Group: " << group << std::endl;
-				              std::cout << "Ack status: " << ack_status << std::endl;
-		              });
-	}
+    sub.subscribe(group,
+      [group](const cpp_redis::message_type msg) {
+        cpp_redis::consumer_response_t res;
+        // Callback will run for each message obtained from the queue
+        std::cout << "Group: " << group << std::endl;
+        std::cout << "Id in the cb: " << msg.get_id() << std::endl;
+        res.insert({"Id", msg.get_id()});
+        return res;
+      },
+      [group](int ack_status) {
+        // Callback will run upon return of xack
+        std::cout << "Group: " << group << std::endl;
+        std::cout << "Ack status: " << ack_status << std::endl;
+      });
+  }
 
-	/*sub.subscribe(group_name,
+  /*sub.subscribe(group_name,
 	              [](const cpp_redis::message_type msg) {
 			              // Callback will run for each message obtained from the queue
 			              std::cout << "Id in the cb: " << msg.get_id() << std::endl;
@@ -87,12 +87,12 @@ main() {
 			              std::cout << "Ack status: " << ack_status << std::endl;
 	              });*/
 
-	sub.commit();
+  sub.commit();
 
-	signal(SIGINT, &sigint_handler);
-	std::mutex mtx;
-	std::unique_lock<std::mutex> l(mtx);
-	should_exit.wait(l);
+  signal(SIGINT, &sigint_handler);
+  std::mutex mtx;
+  std::unique_lock<std::mutex> l(mtx);
+  should_exit.wait(l);
 
-	return 0;
+  return 0;
 }

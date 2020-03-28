@@ -30,16 +30,16 @@
 
 namespace cpp_redis {
 
-	namespace builders {
+namespace builders {
 
-		/**
+/**
 		 * @brief interface inherited by all builders
 		 */
-		class builder_iface {
-		public:
-				virtual ~builder_iface() = default;
+class builder_iface {
+public:
+  virtual ~builder_iface() = default;
 
-				/**
+  /**
 				 * take data as parameter which is consumed to build the reply
 				 * every bytes used to build the reply must be removed from the buffer passed as parameter
 				 *
@@ -47,22 +47,22 @@ namespace cpp_redis {
 				 * @return current instance
 				 *
 				 */
-				virtual builder_iface &operator<<(std::string &data) = 0;
+  virtual builder_iface& operator<<(std::string& data) = 0;
 
-				/**
+  /**
 				 * @return whether the reply could be built
 				 *
 				 */
-				virtual bool reply_ready() const = 0;
+  virtual bool reply_ready() const = 0;
 
-				/**
+  /**
 				 * @return reply object
 				 *
 				 */
-				virtual reply get_reply() const = 0;
-		};
+  virtual reply get_reply() const = 0;
+};
 
-	} // namespace builders
+} // namespace builders
 
 } // namespace cpp_redis
 

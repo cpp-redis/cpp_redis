@@ -36,7 +36,7 @@ public:
   using std::runtime_error::runtime_error;
   using std::runtime_error::what;
 
-/**
+  /**
  * ctor (string)
  *
  */
@@ -44,7 +44,7 @@ public:
   : std::runtime_error(err.c_str()) {
   }
 
-/**
+  /**
  * ctor(char*)
  *
  */

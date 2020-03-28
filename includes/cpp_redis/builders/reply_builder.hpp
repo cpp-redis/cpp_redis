@@ -40,30 +40,30 @@ namespace builders {
  */
 class reply_builder {
 public:
-/**
+  /**
  * ctor
  *
  */
   reply_builder();
-/**
+  /**
  * dtor
  *
  */
   ~reply_builder() = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   reply_builder(const reply_builder&) = delete;
-/**
+  /**
  * assignment operator
  *
  */
   reply_builder& operator=(const reply_builder&) = delete;
 
 public:
-/**
+  /**
  * add data to reply builder
  * data is used to build replies that can be retrieved with get_front later on if reply_available returns true
  *
@@ -73,7 +73,7 @@ public:
  */
   reply_builder& operator<<(const std::string& data);
 
-/**
+  /**
  * similar as get_front, store reply in the passed parameter
  *
  * @param reply reference to the reply object where to store the first available reply
@@ -81,32 +81,32 @@ public:
  */
   void operator>>(reply& reply);
 
-/**
+  /**
  * @return the first available reply
  *
  */
   const reply& get_front() const;
 
-/**
+  /**
  * pop the first available reply
  *
  */
   void pop_front();
 
-/**
+  /**
  * @return whether a reply is available
  *
  */
   bool reply_available() const;
 
-/**
+  /**
  * reset the reply builder to its initial state (clear internal buffer and stages)
  *
  */
   void reset();
 
 private:
-/**
+  /**
  * build reply using m_buffer content
  *
  * @return whether the reply has been fully built or not
@@ -115,19 +115,19 @@ private:
   bool build_reply();
 
 private:
-/**
+  /**
  * buffer to be used to build data
  *
  */
   std::string m_buffer;
 
-/**
+  /**
  * current builder used to build current reply
  *
  */
   std::unique_ptr<builder_iface> m_builder;
 
-/**
+  /**
  * queue of available (built) replies
  *
  */

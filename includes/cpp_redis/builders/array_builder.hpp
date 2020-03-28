@@ -29,40 +29,40 @@
 
 namespace cpp_redis {
 
-	namespace builders {
+namespace builders {
 
 /**
  * builder to build redis array replies
  *
  */
-		class array_builder : public builder_iface {
-		public:
-/**
+class array_builder : public builder_iface {
+public:
+  /**
  * ctor
  *
  */
-				array_builder();
+  array_builder();
 
-/**
+  /**
  * dtor
  *
  */
-				~array_builder() override = default;
+  ~array_builder() override = default;
 
-/**
+  /**
  * copy ctor
  *
  */
-				array_builder(const array_builder &) = delete;
+  array_builder(const array_builder&) = delete;
 
-/**
+  /**
  * assignment operator
  *
  */
-				array_builder &operator=(const array_builder &) = delete;
+  array_builder& operator=(const array_builder&) = delete;
 
-		public:
-/**
+public:
+  /**
  * take data as parameter which is consumed to build the reply
  * every bytes used to build the reply must be removed from the buffer passed as parameter
  *
@@ -70,22 +70,22 @@ namespace cpp_redis {
  * @return current instance
  *
  */
-				builder_iface &operator<<(std::string &data) override;
+  builder_iface& operator<<(std::string& data) override;
 
-/**
+  /**
  * @return whether the reply could be built
  *
  */
-				bool reply_ready() const override;
+  bool reply_ready() const override;
 
-/**
+  /**
  * @return reply object
  *
  */
-				reply get_reply() const override;
+  reply get_reply() const override;
 
-		private:
-/**
+private:
+  /**
  * take data as parameter which is consumed to determine array size
  * every bytes used to build size is removed from the buffer passed as parameter
  *
@@ -93,9 +93,9 @@ namespace cpp_redis {
  * @return true if the size could be found
  *
  */
-				bool fetch_array_size(std::string &buffer);
+  bool fetch_array_size(std::string& buffer);
 
-/**
+  /**
  * take data as parameter which is consumed to build an array row
  * every bytes used to build row is removed from the buffer passed as parameter
  *
@@ -103,41 +103,41 @@ namespace cpp_redis {
  * @return true if the row could be built
  *
  */
-				bool build_row(std::string &buffer);
+  bool build_row(std::string& buffer);
 
-		private:
-/**
+private:
+  /**
  * builder used to fetch the array size
  *
  */
-				integer_builder m_int_builder;
+  integer_builder m_int_builder;
 
-/**
+  /**
  * built array size
  *
  */
-				uint64_t m_array_size;
+  uint64_t m_array_size;
 
-/**
+  /**
  * current builder used to build current row
  *
  */
-				std::unique_ptr<builder_iface> m_current_builder;
+  std::unique_ptr<builder_iface> m_current_builder;
 
-/**
+  /**
  * whether the reply is ready or not
  *
  */
-				bool m_reply_ready;
+  bool m_reply_ready;
 
-/**
+  /**
  * reply to be built (or built)
  *
  */
-				reply m_reply;
-		};
+  reply m_reply;
+};
 
-	} // namespace builders
+} // namespace builders
 
 } // namespace cpp_redis
 

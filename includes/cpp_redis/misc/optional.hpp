@@ -44,19 +44,20 @@ using enableIf = typename std::enable_if<I, T>::type;
 
 template <class T>
 struct optional {
-  optional(T value) : m_value(value) {}
-//  optional<T>&
-//  operator()(T value) {
-//    m_value = value;
-//    return *this;
-//  }
+  optional(T value)
+  : m_value(value) {}
+  //  optional<T>&
+  //  operator()(T value) {
+  //    m_value = value;
+  //    return *this;
+  //  }
 
   T m_value;
 
   template <class U>
   enableIf<std::is_convertible<U, T>::value, T>
   value_or(U&& v) const {
-    __CPP_REDIS_LOG(1, "value_or(U&& v)\n")
+    __CPP_REDIS_LOG(warn, "value_or(U&& v)\n")
     return std::forward<U>(v);
   }
 

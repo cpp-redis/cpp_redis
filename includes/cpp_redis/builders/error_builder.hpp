@@ -36,30 +36,30 @@ namespace builders {
  */
 class error_builder : public builder_iface {
 public:
-/**
+  /**
  * ctor
  *
  */
   error_builder() = default;
-/**
+  /**
  * dtor
  *
  */
   ~error_builder() override = default;
 
-/**
+  /**
  * copy ctor
  *
  */
   error_builder(const error_builder&) = delete;
-/**
+  /**
  * assignment operator
  *
  */
   error_builder& operator=(const error_builder&) = delete;
 
 public:
-/**
+  /**
  * take data as parameter which is consumed to build the reply
  * every bytes used to build the reply must be removed from the buffer passed as parameter
  *
@@ -69,32 +69,32 @@ public:
  */
   builder_iface& operator<<(std::string& data) override;
 
-/**
+  /**
  * @return whether the reply could be built
  *
  */
   bool reply_ready() const override;
 
-/**
+  /**
  * @return reply object
  *
  */
   reply get_reply() const override;
 
-/**
+  /**
  * @return the parsed error
  *
  */
   const std::string& get_error() const;
 
 private:
-/**
+  /**
  * builder used to parse the error
  *
  */
   simple_string_builder m_string_builder;
 
-/**
+  /**
  * reply to be built
  *
  */

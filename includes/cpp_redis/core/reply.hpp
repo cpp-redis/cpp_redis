@@ -37,8 +37,8 @@ namespace cpp_redis {
  * That is, cpp_redis::reply objects are passed as parameters of commands callbacks and contain the server's response.
  *
  */
-	class reply {
-	public:
+class reply {
+public:
 #define __CPP_REDIS_REPLY_ERR 0
 #define __CPP_REDIS_REPLY_BULK 1
 #define __CPP_REDIS_REPLY_SIMPLE 2
@@ -46,238 +46,238 @@ namespace cpp_redis {
 #define __CPP_REDIS_REPLY_INT 4
 #define __CPP_REDIS_REPLY_ARRAY 5
 
-/**
+  /**
  * type of reply, based on redis server standard replies
  *
  */
-			enum class type {
-					error = __CPP_REDIS_REPLY_ERR,
-					bulk_string = __CPP_REDIS_REPLY_BULK,
-					simple_string = __CPP_REDIS_REPLY_SIMPLE,
-					null = __CPP_REDIS_REPLY_NULL,
-					integer = __CPP_REDIS_REPLY_INT,
-					array = __CPP_REDIS_REPLY_ARRAY
-			};
+  enum class type {
+    error         = __CPP_REDIS_REPLY_ERR,
+    bulk_string   = __CPP_REDIS_REPLY_BULK,
+    simple_string = __CPP_REDIS_REPLY_SIMPLE,
+    null          = __CPP_REDIS_REPLY_NULL,
+    integer       = __CPP_REDIS_REPLY_INT,
+    array         = __CPP_REDIS_REPLY_ARRAY
+  };
 
-/**
+  /**
  * specific type of replies for string-based replies
  *
  */
-			enum class string_type {
-					error = __CPP_REDIS_REPLY_ERR,
-					bulk_string = __CPP_REDIS_REPLY_BULK,
-					simple_string = __CPP_REDIS_REPLY_SIMPLE
-			};
+  enum class string_type {
+    error         = __CPP_REDIS_REPLY_ERR,
+    bulk_string   = __CPP_REDIS_REPLY_BULK,
+    simple_string = __CPP_REDIS_REPLY_SIMPLE
+  };
 
-	public:
-/**
+public:
+  /**
  * default ctor (set a null reply)
  *
  */
-			reply();
+  reply();
 
-/**
+  /**
  * ctor for string values
  *
  * @param value string value
  * @param reply_type of string reply
  *
  */
-			reply(const std::string &value, string_type reply_type);
+  reply(const std::string& value, string_type reply_type);
 
-/**
+  /**
  * ctor for int values
  *
  * @param value integer value
  *
  */
-			explicit reply(int64_t value);
+  explicit reply(int64_t value);
 
-/**
+  /**
  * ctor for array values
  *
  * @param rows array reply
  * @return current instance
  *
  */
-			explicit reply(const std::vector<reply> &rows);
+  explicit reply(const std::vector<reply>& rows);
 
-/**
+  /**
  * dtor
  *
  */
-			~reply() = default;
+  ~reply() = default;
 
-/**
+  /**
  * copy ctor
  *
  */
-			reply(const reply &) = default;
+  reply(const reply&) = default;
 
-/**
+  /**
  * assignment operator
  *
  */
-			reply &operator=(const reply &) = default;
+  reply& operator=(const reply&) = default;
 
-/**
+  /**
  * move ctor
  *
  */
-			reply(reply &&) noexcept;
+  reply(reply&&) noexcept;
 
-/**
+  /**
  * move assignment operator
  *
  */
-			reply &operator=(reply &&) noexcept;
+  reply& operator=(reply&&) noexcept;
 
-	public:
-/**
+public:
+  /**
  * @return whether the reply is an array
  *
  */
-			bool is_array() const;
+  bool is_array() const;
 
-/**
+  /**
  * @return whether the reply is a string (simple, bulk, error)
  *
  */
-			bool is_string() const;
+  bool is_string() const;
 
-/**
+  /**
  * @return whether the reply is a simple string
  *
  */
-			bool is_simple_string() const;
+  bool is_simple_string() const;
 
-/**
+  /**
  * @return whether the reply is a bulk string
  *
  */
-			bool is_bulk_string() const;
+  bool is_bulk_string() const;
 
-/**
+  /**
  * @return whether the reply is an error
  *
  */
-			bool is_error() const;
+  bool is_error() const;
 
-/**
+  /**
  * @return whether the reply is an integer
  *
  */
-			bool is_integer() const;
+  bool is_integer() const;
 
-/**
+  /**
  * @return whether the reply is null
  *
  */
-			bool is_null() const;
+  bool is_null() const;
 
-	public:
-/**
+public:
+  /**
  * @return true if function is not an error
  *
  */
-			bool ok() const;
+  bool ok() const;
 
-/**
+  /**
  * @return true if function is an error
  *
  */
-			bool ko() const;
+  bool ko() const;
 
-/**
+  /**
  * convenience implicit conversion, same as !is_null() / ok()
  *
  */
-			explicit operator bool() const;
+  explicit operator bool() const;
 
-	public:
-			optional_t<int64_t> try_get_int() const;
+public:
+  optional_t<int64_t> try_get_int() const;
 
-	public:
-/**
+public:
+  /**
  * @return the underlying error
  *
  */
-			const std::string &error() const;
+  const std::string& error() const;
 
-/**
+  /**
  * @return the underlying array
  *
  */
-			const std::vector<reply> &as_array() const;
+  const std::vector<reply>& as_array() const;
 
-/**
+  /**
  * @return the underlying string
  *
  */
-			const std::string &as_string() const;
+  const std::string& as_string() const;
 
-/**
+  /**
  * @return the underlying integer
  *
  */
-			int64_t as_integer() const;
+  int64_t as_integer() const;
 
-	public:
-/**
+public:
+  /**
  * set reply as null
  *
  */
-			void set();
+  void set();
 
-/**
+  /**
  * set a string reply
  *
  * @param value string value
  * @param reply_type of string reply
  *
  */
-			void set(const std::string &value, string_type reply_type);
+  void set(const std::string& value, string_type reply_type);
 
-/**
+  /**
  * set an integer reply
  *
  * @param value integer value
  *
  */
-			void set(int64_t value);
+  void set(int64_t value);
 
-/**
+  /**
  * set an array reply
  *
  * @param rows array reply
  *
  */
-			void set(const std::vector<reply> &rows);
+  void set(const std::vector<reply>& rows);
 
-/**
+  /**
  * for array replies, add a new row to the reply
  *
  * @param reply new row to be appended
  * @return current instance
  *
  */
-			reply &operator<<(const reply &reply);
+  reply& operator<<(const reply& reply);
 
-	public:
-/**
+public:
+  /**
  * @return reply type
  *
  */
-			type get_type() const;
+  type get_type() const;
 
-	private:
-			type m_type;
-			std::vector<cpp_redis::reply> m_rows;
-			std::string m_str_val;
-			int64_t m_int_val;
-	};
+private:
+  type m_type;
+  std::vector<cpp_redis::reply> m_rows;
+  std::string m_str_val;
+  int64_t m_int_val;
+};
 
-	typedef reply reply_t;
+typedef reply reply_t;
 
 } // namespace cpp_redis
 
@@ -285,4 +285,4 @@ namespace cpp_redis {
  * support for output
  *
  */
-std::ostream &operator<<(std::ostream &os, const cpp_redis::reply_t &reply);
+std::ostream& operator<<(std::ostream& os, const cpp_redis::reply_t& reply);
