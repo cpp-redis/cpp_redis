@@ -24,11 +24,15 @@
 
 #include <iostream>
 #include <sstream>
+#if _WIN32
 #include "winsock_initializer.h"
+#endif
 
 int
 main(void) {
+#if _WIN32
   winsock_initializer winsock_init;
+#endif
   cpp_redis::client client;
 
   client.connect("127.0.0.1", 6379, [](const std::string& host, std::size_t port, cpp_redis::connect_state status) {
