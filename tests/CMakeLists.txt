@@ -21,48 +21,29 @@
 # SOFTWARE.
 
 ###
-# project
-###
-set(PROJECT cpp_redis_tests)
-project(${PROJECT} CXX)
-
-
-###
-# compilation options
-###
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(NOT WIN32)
-
-
-###
-# includes
-###
-include_directories(${DEPS_INCLUDES} ${CPP_REDIS_INCLUDES})
-
-
-###
-# libraries
-###
-link_directories(${DEPS_LIBRARIES})
-
-
-###
 # executables
 ###
-set(MAIN "sources/main.cpp")
-set(DIRS "sources/spec" "sources/spec/**")
-foreach(DIR ${DIRS})
-  file(GLOB s_${DIR} "${DIR}/*.cpp")
-  foreach(SOURCE ${s_${DIR}})
-    get_filename_component(TEST_NAME ${SOURCE} NAME_WE)
-    add_executable(${TEST_NAME} ${MAIN} ${SOURCE})
-    target_link_libraries(${TEST_NAME} cpp_redis gtest)
-    if(WIN32)
-      target_link_libraries(${TEST_NAME} ws2_32)
-    else()
-      target_link_libraries(${TEST_NAME} pthread)
-    endif(WIN32)
-    add_test(NAME ${TEST_NAME}_tests COMMAND ${TEST_NAME})
-  endforeach()
+set(main "sources/main.cpp")
+
+macro(add_spec_test source)
+  get_filename_component(test_name ${source} NAME_WE)
+  add_executable(${test_name} ${main} ${source})
+  target_link_libraries(${test_name} PRIVATE ${PROJECT_NAME} gtest Threads::Threads)
+  add_test(NAME ${PROJECT_NAME}::${test_name}_tests COMMAND ${test_name})
+endmacro()
+
+set(tests
+  sources/spec/builders/array_builder_spec.cpp
+  sources/spec/builders/integer_builder_spec.cpp
+  sources/spec/builders/builders_factory_spec.cpp
+  sources/spec/builders/reply_builder_spec.cpp
+  sources/spec/builders/bulk_string_builder_spec.cpp
+  sources/spec/builders/simple_string_builder_spec.cpp
+  sources/spec/builders/error_builder_spec.cpp
+  sources/spec/redis_client_spec.cpp
+  sources/spec/redis_subscriber_spec.cpp
+  sources/spec/reply_spec.cpp)
+
+foreach(test ${tests})
+  add_spec_test(${test})
 endforeach()

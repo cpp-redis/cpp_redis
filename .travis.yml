@@ -23,14 +23,28 @@ addons:
       - clang
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install llvm; fi
+  - source scripts/prepare.sh
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ccache; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/opt/ccache/libexec:$PATH"; fi
-  - if [[ "$TRAVIS_OS_NAME" != "osx" && "$CXX" = "g++" ]]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install redis; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then (redis-server&); fi
+  - source scripts/install-osx-dependencies.sh
+  - source scripts/install-cmake.sh
+before_script:
+  - source scripts/start-redis.sh
+  # create a build folder for the out-of-source build
+  - mkdir build
+  # switch to build directory
+  - cd build
+  # run cmake; here we assume that the project's
+  # top-level CMakeLists.txt is located at '..'
+  - ls ${CMAKE_INSTALL_DIR}
+  - ls ${CMAKE_INSTALL_DIR}/bin
+  - env
+  - which cmake
+  - cmake --version
+  - cmake .. -DBUILD_TESTS=true -DBUILD_EXAMPLES=true
 
-script: mkdir build && cd build && cmake .. -DBUILD_TESTS=true -DBUILD_EXAMPLES=true && make && GTEST_COLOR=1 ctest -VV
+script:
+  # once CMake has done its job we just build using make as usual
+  - make
+  # if the project uses ctest we can run the tests like this
+  - GTEST_COLOR=1 ctest -VV

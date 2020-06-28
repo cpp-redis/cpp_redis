@@ -1,0 +1,30 @@
+#!/usr/bin/env sh -x
+
+# this script needs to be sourced
+CMAKE_DOWNLOAD_DIR="${TRAVIS_BUILD_DIR}/deps"
+CMAKE_VERSION_MAJOR="3"
+CMAKE_VERSION_MINOR="15"
+CMAKE_VERSION_PATCH="3"
+CMAKE_VERSION="${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}"
+
+CMAKE_PLATFORM="Linux"
+if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    CMAKE_PLATFORM="Darwin";
+fi
+
+CMAKE_FILE="cmake-${CMAKE_VERSION}-${CMAKE_PLATFORM}-x86_64"
+CMAKE_DIR="v${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}"
+CMAKE_FILE_URL="https://cmake.org/files/${CMAKE_DIR}/${CMAKE_FILE}.tar.gz"
+
+mkdir -p ${CMAKE_DOWNLOAD_DIR}
+
+cd ${CMAKE_DOWNLOAD_DIR}
+travis_retry wget ${CMAKE_FILE_URL}
+tar -xvf ${CMAKE_FILE}.tar.gz > /dev/null
+CMAKE_INSTALL_DIR="${CMAKE_DOWNLOAD_DIR}/${CMAKE_FILE}"
+if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    CMAKE_INSTALL_DIR="${CMAKE_INSTALL_DIR}/CMake.app/Contents";
+fi
+export PATH="${CMAKE_INSTALL_DIR}:${CMAKE_INSTALL_DIR}/bin:$PATH"
+
+cd -
