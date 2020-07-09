@@ -50,7 +50,7 @@ namespace cpp_redis {
 		if (is_integer())
 			return optional_t<int64_t>(m_int_val);
 
-		__CPP_REDIS_LOG(1, "Reply is not an integer");
+		__CPP_REDIS_LOG(warn, "Reply is not an integer");
 		return {0};
 	}
 
