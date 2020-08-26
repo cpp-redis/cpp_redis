@@ -55,7 +55,7 @@ foreach(EXAMPLE IN ITEMS ${EXAMPLES})
   # executable
   ###
   add_executable(${EXAMPLE} ${EXAMPLE}.cpp)
-  target_link_libraries(${EXAMPLE} cpp_redis)
+  target_link_libraries(${EXAMPLE} cpp_redis tacopie)
 
   ###
   # link libs
