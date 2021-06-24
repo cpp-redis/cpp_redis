@@ -23,6 +23,7 @@
 #include <cpp_redis/core/client.hpp>
 #include <cpp_redis/misc/error.hpp>
 #include <cpp_redis/misc/macro.hpp>
+#include <thread>
 
 namespace cpp_redis {
 
