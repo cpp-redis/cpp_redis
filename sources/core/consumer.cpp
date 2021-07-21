@@ -58,8 +58,10 @@ void
 consumer::dispatch_changed_handler(size_t size) {
   if (size >= m_max_concurrency) {
     dispatch_queue_full.store(true);
-    dispatch_queue_changed.notify_all();
+  } else {
+    dispatch_queue_full.store(false);
   }
+  dispatch_queue_changed.notify_all();
 }
 
 void
